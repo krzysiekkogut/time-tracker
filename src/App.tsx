@@ -1,13 +1,8 @@
 import * as React from 'react';
+import { TimeTracker } from './components/TimeTracker';
 
-class App extends React.Component {
-  render() {
-    return (
-      <div>
-        Daily time tracker
-      </div>
-    );
-  }
-}
+const App = () => {
+  return <TimeTracker />;
+};
 
 export default App;
