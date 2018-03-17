@@ -15,12 +15,16 @@ class TrackingRepository {
 
     addAsync = async (newTrackingEntry: TrackingEntry): Promise<TrackingEntry> => {
         const tracking = await this.getAllAsync();
-        const indexOfLatest = tracking.findIndex(entry => entry.end === null);
-        tracking[indexOfLatest].end = newTrackingEntry.start;
+        if (tracking.length > 0) {
+            const indexOfLatest = tracking.findIndex(entry => entry.end === null);
+            tracking[indexOfLatest].end = newTrackingEntry.start;
+        }
+
+        tracking.push(newTrackingEntry);
         localStorage.setItem(TrackingRepository.trackingKey, JSON.stringify(tracking));
         return newTrackingEntry;
     }
-    
+
 }
 
 export default new TrackingRepository();

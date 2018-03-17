@@ -22,13 +22,18 @@ export class NewActiity extends React.Component<NewActivityProps, { newActivityN
         });
     }
 
+    startTracking = async () => {
+        await this.props.startTracking(this.state.newActivityName);
+        this.setState({ newActivityName: '' });
+    }
+
     render() {
         return (
             <div>
                 <h1>New activity</h1>
                 <button
                     disabled={this.state.newActivityName.length === 0}
-                    onClick={() => this.props.startTracking(this.state.newActivityName)}
+                    onClick={this.startTracking}
                 >
                     Next activity
                 </button>
