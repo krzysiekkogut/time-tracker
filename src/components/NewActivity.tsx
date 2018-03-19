@@ -1,22 +1,36 @@
 import * as React from 'react';
 import * as moment from 'moment';
-import { Input, Button } from 'antd';
+import { AutoComplete, Button } from 'antd';
 
 import { TrackingEntry } from '../model/trackingEntry';
+import { Activity } from '../model/activity';
 
 interface NewActivityProps {
+    activities: Activity[];
     latestTrackingEntry: TrackingEntry | null;
     startTracking: (activityName: string) => Promise<void>;
 }
 
-export class NewActivity extends React.Component<NewActivityProps, { newActivityName: string }> {
+interface NewActivityState {
+    newActivityName: string;
+    autoCompleteDataSource: string[];
+}
+
+export class NewActivity extends React.Component<NewActivityProps, NewActivityState> {
 
     constructor(props: NewActivityProps) {
         super(props);
 
         this.state = {
-            newActivityName: ''
+            newActivityName: '',
+            autoCompleteDataSource: []
         };
+    }
+
+    componentWillReceiveProps() {
+        this.setState({
+            autoCompleteDataSource: this.props.activities.map(a => a.name)
+        });
     }
 
     render() {
@@ -24,12 +38,13 @@ export class NewActivity extends React.Component<NewActivityProps, { newActivity
         return (
             <div>
                 <div>
-                    <Input
+                    <AutoComplete
                         placeholder="Activity name"
                         value={this.state.newActivityName}
                         onChange={this.onActivityNameChange}
+                        onSearch={this.onActivityNameChange}
+                        dataSource={this.state.autoCompleteDataSource}
                         size="large"
-                        onPressEnter={this.startTracking}
                         style={{ width: '85%' }}
                     />
                 </div>
@@ -69,9 +84,10 @@ export class NewActivity extends React.Component<NewActivityProps, { newActivity
         );
     }
 
-    private onActivityNameChange = (event: React.FormEvent<HTMLInputElement>) => {
+    private onActivityNameChange = (value: string) => {
         this.setState({
-            newActivityName: event.currentTarget.value
+            newActivityName: value,
+            autoCompleteDataSource: this.props.activities.map(a => a.name).filter(a => a.indexOf(value) >= 0)
         });
     }
 

@@ -40,6 +40,7 @@ export class TimeTracker extends React.Component<{}, UserData> {
 
         const newActivityComponent = () => (
             <NewActivity
+                activities={this.state.activities}
                 latestTrackingEntry={latestTrackingEntry}
                 startTracking={this.startTracking}
             />
