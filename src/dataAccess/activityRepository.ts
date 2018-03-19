@@ -26,12 +26,21 @@ class ActivityRepository {
 
         const newActivity = {
             id: GuidV4(),
-            name: activityName
+            name: activityName,
+            colorHex: this.getRandomColor()
         };
         activities.push(newActivity);
         localStorage.setItem(ActivityRepository.activitiesKey, JSON.stringify(activities));
 
         return newActivity;
+    }
+
+    private getRandomColor = (): string => {
+        let color = '#';
+        for (let index = 0; index < 6; index++) {
+            color += Math.floor(Math.random() * 16).toString(16);
+        }
+        return color;
     }
 }
 

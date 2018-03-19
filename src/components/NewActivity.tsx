@@ -1,12 +1,14 @@
 import * as React from 'react';
+import * as moment from 'moment';
+
 import { TrackingEntry } from '../model/trackingEntry';
 
 interface NewActivityProps {
-    latestTrackingEntry: TrackingEntry | undefined;
+    latestTrackingEntry: TrackingEntry | null;
     startTracking: (activityName: string) => Promise<void>;
 }
 
-export class NewActiity extends React.Component<NewActivityProps, { newActivityName: string }> {
+export class NewActivity extends React.Component<NewActivityProps, { newActivityName: string }> {
 
     constructor(props: NewActivityProps) {
         super(props);
@@ -16,36 +18,44 @@ export class NewActiity extends React.Component<NewActivityProps, { newActivityN
         };
     }
 
-    onActivityNameChange = (event: React.FormEvent<HTMLInputElement>) => {
-        this.setState({
-            newActivityName: event.currentTarget.value
-        });
-    }
-
-    startTracking = async () => {
-        await this.props.startTracking(this.state.newActivityName);
-        this.setState({ newActivityName: '' });
-    }
-
     render() {
         return (
             <div>
                 <h1>New activity</h1>
+                <input
+                    placeholder="Activity name"
+                    value={this.state.newActivityName}
+                    onChange={this.onActivityNameChange}
+                />
                 <button
                     disabled={this.state.newActivityName.length === 0}
                     onClick={this.startTracking}
                 >
                     Next activity
                 </button>
-                <input
-                    placeholder="Activity name"
-                    value={this.state.newActivityName}
-                    onChange={this.onActivityNameChange}
-                />
                 {
                     this.props.latestTrackingEntry
-                    && <p>Latest activity started at: {this.props.latestTrackingEntry.start}</p>}
+                    && (
+                        <p>
+                            Latest activity started at:&nbsp;
+                            <span style={{ fontWeight: 'bold' }}>
+                                {moment(this.props.latestTrackingEntry.start).format('dddd HH:mm:ss')}
+                            </span>
+                        </p>
+                    )
+                }
             </div >
         );
+    }
+
+    private onActivityNameChange = (event: React.FormEvent<HTMLInputElement>) => {
+        this.setState({
+            newActivityName: event.currentTarget.value
+        });
+    }
+
+    private startTracking = async () => {
+        await this.props.startTracking(this.state.newActivityName);
+        this.setState({ newActivityName: '' });
     }
 }

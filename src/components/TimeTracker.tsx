@@ -1,12 +1,19 @@
 import * as React from 'react';
 import { v4 as GuidV4 } from 'uuid';
+import * as moment from 'moment';
 
-import { UserData } from '../model/userData';
 import ActivityRepository from '../dataAccess/activityRepository';
 import TrackingRepository from '../dataAccess/trackingRepository';
 import { Header } from './Header';
-import { NewActiity } from './NewActivity';
+import { NewActivity } from './NewActivity';
+import { ActivitiesDetails } from './ActivitiesDetails';
+import { Activity } from '../model/activity';
 import { TrackingEntry } from '../model/trackingEntry';
+
+interface UserData {
+    activities: Activity[];
+    tracking: TrackingEntry[];
+}
 
 export class TimeTracker extends React.Component<{}, UserData> {
 
@@ -15,8 +22,7 @@ export class TimeTracker extends React.Component<{}, UserData> {
 
         this.state = {
             activities: [],
-            tracking: [],
-            historicalTracking: []
+            tracking: []
         };
     }
 
@@ -24,57 +30,54 @@ export class TimeTracker extends React.Component<{}, UserData> {
         this.loadUserData();
     }
 
-    loadUserData = async () => {
+    render() {
+        const latestTrackingEntry =
+            this.state.tracking.length === 0
+                ? null
+                : this.state.tracking.find(entry => entry.end === null)!;
+
+        return (
+            <div>
+                <Header />
+                <NewActivity
+                    latestTrackingEntry={latestTrackingEntry}
+                    startTracking={this.startTracking}
+                />
+                <ActivitiesDetails
+                    tracking={this.state.tracking}
+                    activities={this.state.activities}
+                    resetTracking={this.resetTracking}
+                />
+            </div>
+        );
+    }
+
+    private loadUserData = async () => {
         const activities = await ActivityRepository.getAllAsync();
         const tracking = await TrackingRepository.getAllAsync();
-        const latestTrackingEntry = tracking.length === 0 ? null : tracking.find(entry => entry.end === null);
 
         const newState: UserData = {
             activities: activities,
-            tracking: tracking,
-            historicalTracking: []
+            tracking: tracking
         };
-        if (latestTrackingEntry) {
-            newState.latestTrackingEntry = latestTrackingEntry;
-        }
 
         this.setState(newState);
     }
 
-    startTracking = async (activityName: string) => {
+    private startTracking = async (activityName: string) => {
         const activity = await ActivityRepository.addAsync(activityName);
-        const now = new Date();
         const newTrackingEntry: TrackingEntry = {
             id: GuidV4(),
-            start: now,
+            start: moment().valueOf(),
             end: null,
             activityId: activity.id,
         };
         await TrackingRepository.addAsync(newTrackingEntry);
-        
         await this.loadUserData();
     }
 
-    render() {
-        return (
-            <div>
-                <Header />
-                <NewActiity
-                    latestTrackingEntry={this.state.latestTrackingEntry}
-                    startTracking={this.startTracking}
-                />
-
-                <hr />
-
-                <div>
-                    <h1>Activities details</h1>
-                    {/* Activities:
-                            - grouped by activity id (name),
-                            - timespan calculated,
-                            - sorted by timespan desc
-                    */}
-                </div>
-            </div>
-        );
+    private resetTracking = async () => {
+        await TrackingRepository.clearAllAsync();
+        await this.loadUserData();
     }
 }

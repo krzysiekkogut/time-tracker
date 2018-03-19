@@ -1,6 +1,6 @@
 export interface TrackingEntry {
     id: string;
-    start: Date;
-    end: Date | null;
+    start: number;
+    end: number | null;
     activityId: string;
 }

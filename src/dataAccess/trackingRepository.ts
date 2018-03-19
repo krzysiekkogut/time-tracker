@@ -25,6 +25,9 @@ class TrackingRepository {
         return newTrackingEntry;
     }
 
+    clearAllAsync = async (): Promise<void> => {
+        localStorage.removeItem(TrackingRepository.trackingKey);
+    }
 }
 
 export default new TrackingRepository();
