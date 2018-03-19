@@ -66,6 +66,8 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                                             columns={colDefs}
                                             style={{ marginLeft: 'auto', marginRight: 'auto', width: controlsWidth }}
                                             pagination={false}
+                                            rowKey={(record: ActivityDetails) =>
+                                                `ACTIVITY_DETAILS_TABLE_ROW_${record.activityName}`}
                                         />
                                     </Col>
                                 </Row>

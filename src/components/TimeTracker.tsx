@@ -56,15 +56,15 @@ export class TimeTracker extends React.Component<{}, UserData> {
         return (
             <BrowserRouter>
                 <Layout style={{ height: '100vh' }}>
-                    <Layout.Sider collapsible={true} breakpoint="md">
-                        <Menu>
-                            <Menu.Item>
+                    <Layout.Sider collapsible={true} breakpoint="md" trigger={null}>
+                        <Menu defaultSelectedKeys={['new']}>
+                            <Menu.Item key="new">
                                 <Link to="/new">
                                     <Icon type="play-circle-o" />
                                     <span>New activity</span>
                                 </Link>
                             </Menu.Item>
-                            <Menu.Item>
+                            <Menu.Item key="details">
                                 <Link to="/details">
                                     <Icon type="bars" />
                                     <span>Details</span>
