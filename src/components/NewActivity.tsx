@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as moment from 'moment';
+import { Input, Button } from 'antd';
 
 import { TrackingEntry } from '../model/trackingEntry';
 
@@ -19,25 +20,45 @@ export class NewActivity extends React.Component<NewActivityProps, { newActivity
     }
 
     render() {
+        const controlsWidth = '85%';
         return (
             <div>
-                <h1>New activity</h1>
-                <input
-                    placeholder="Activity name"
-                    value={this.state.newActivityName}
-                    onChange={this.onActivityNameChange}
-                />
-                <button
-                    disabled={this.state.newActivityName.length === 0}
-                    onClick={this.startTracking}
-                >
-                    Next activity
-                </button>
+                <div>
+                    <Input
+                        placeholder="Activity name"
+                        value={this.state.newActivityName}
+                        onChange={this.onActivityNameChange}
+                        size="large"
+                        onPressEnter={this.startTracking}
+                        style={{ width: '85%' }}
+                    />
+                </div>
+                <div style={{ marginTop: '2vh' }}>
+                    <Button
+                        disabled={this.state.newActivityName.length === 0}
+                        onClick={this.startTracking}
+                        type="primary"
+                        icon="play-circle"
+                        size="large"
+                        style={{ width: '85%' }}
+                    >
+                        Next activity
+                    </Button>
+                </div>
                 {
                     this.props.latestTrackingEntry
                     && (
-                        <p>
-                            Latest activity started at:&nbsp;
+                        <p
+                            style={{
+                                marginTop: '2vh',
+                                marginLeft: 'auto',
+                                marginRight: 'auto',
+                                width: controlsWidth,
+                                textAlign: 'left'
+                            }}
+                        >
+                            Latest activity started at:
+                            <br />
                             <span style={{ fontWeight: 'bold' }}>
                                 {moment(this.props.latestTrackingEntry.start).format('dddd HH:mm:ss')}
                             </span>

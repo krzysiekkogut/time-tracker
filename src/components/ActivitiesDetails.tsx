@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Pie, ChartData } from 'react-chartjs-2';
 import { ChartData as ChartJsData } from 'chart.js';
 import * as moment from 'moment';
+import { Button, Table, Row, Col } from 'antd';
 
 import { TrackingEntry } from '../model/trackingEntry';
 import { Activity } from '../model/activity';
@@ -23,36 +24,66 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
 
     render() {
         const trackingAggregatedAndSorted = this.aggregateAndSortTracking();
+        const colDefs = [{
+            title: 'Activity name',
+            dataIndex: 'activityName',
+            key: 'ACTIVITY_NAME_COLUMN'
+        }, {
+            title: 'Duration',
+            dataIndex: 'durationString',
+            key: 'DURATION_COLUMN'
+        }];
+        const controlsWidth = '85%';
 
         return (
             <div>
-                <h1>Activities details</h1>
                 {
                     trackingAggregatedAndSorted.length === 0
                         ? <p>No activities tracked.</p>
                         : (
                             <div>
-                                <Pie
-                                    data={this.convertToChartJsData(trackingAggregatedAndSorted)}
-                                    options={{ tooltips: { enabled: false } }}
-                                />
-                                <table>
-                                    <thead>
-                                        <tr>
-                                            <th>Activity name</th>
-                                            <th>Percent</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {
-                                            trackingAggregatedAndSorted.map(this.createActivityRow)
-                                        }
-                                    </tbody>
-                                </table>
+                                <Row>
+                                    <Col xs={0} sm={12}>
+                                        <Pie
+                                            data={this.convertToChartJsData(trackingAggregatedAndSorted)}
+                                            options={{
+                                                legend: {
+                                                    position: 'left'
+                                                },
+                                                tooltips: {
+                                                    callbacks: {
+                                                        label: (tooltipItem, data) => {
+                                                            return data.labels![tooltipItem.index!];
+                                                        }
+                                                    }
+                                                },
+                                            }}
+                                        />
+                                    </Col>
+                                    <Col xs={24} sm={12}>
+                                        <Table
+                                            dataSource={trackingAggregatedAndSorted}
+                                            columns={colDefs}
+                                            style={{ marginLeft: 'auto', marginRight: 'auto', width: controlsWidth }}
+                                            pagination={false}
+                                        />
+                                    </Col>
+                                </Row>
+                                <Row style={{ marginTop: '2vh' }}>
+                                    <Col>
+                                        <Button
+                                            onClick={this.props.resetTracking}
+                                            type="danger"
+                                            size="large"
+                                            style={{ width: controlsWidth }}
+                                        >
+                                            Reset
+                                        </Button>
+                                    </Col>
+                                </Row>
                             </div>
                         )
                 }
-                <button onClick={this.props.resetTracking}>Reset</button>
             </div>
         );
     }
@@ -136,14 +167,5 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                 backgroundColor: activitiesDetails.map(activity => activity.colorHex)
             }]
         };
-    }
-
-    private createActivityRow = (activityDetails: ActivityDetails): JSX.Element => {
-        return (
-            <tr key={`ACTIVITY_DETAILS_${activityDetails.activityName}`}>
-                <td>{activityDetails.activityName}</td>
-                <td>{activityDetails.durationString}</td>
-            </tr>
-        );
     }
 }
