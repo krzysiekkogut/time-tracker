@@ -19,7 +19,7 @@ class ActivityRepository {
 
         const activities = await this.getAllAsync();
 
-        const existingActivity = activities.find(a => a.name === activityName);
+        const existingActivity = activities.find(a => a.name.toLowerCase() === activityName.toLowerCase());
         if (existingActivity) {
             return existingActivity;
         }
@@ -33,6 +33,10 @@ class ActivityRepository {
         localStorage.setItem(ActivityRepository.activitiesKey, JSON.stringify(activities));
 
         return newActivity;
+    }
+
+    clearAllAsync = async (): Promise<void> => {
+        localStorage.removeItem(ActivityRepository.activitiesKey);
     }
 
     private getRandomColor = (): string => {

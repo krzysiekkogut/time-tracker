@@ -8,6 +8,7 @@ import { Activity } from '../model/activity';
 interface NewActivityProps {
     activities: Activity[];
     latestTrackingEntry: TrackingEntry | null;
+    latestActivityName: string | null;
     startTracking: (activityName: string) => Promise<void>;
 }
 
@@ -27,9 +28,10 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
         };
     }
 
-    componentWillReceiveProps() {
+    componentDidMount() {
         this.setState({
-            autoCompleteDataSource: this.props.activities.map(a => a.name)
+            autoCompleteDataSource:
+                this.props.activities.map(a => a.name).sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
         });
     }
 
@@ -42,7 +44,6 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
                         placeholder="Activity name"
                         value={this.state.newActivityName}
                         onChange={this.onActivityNameChange}
-                        onSearch={this.onActivityNameChange}
                         dataSource={this.state.autoCompleteDataSource}
                         size="large"
                         style={{ width: '85%' }}
@@ -72,7 +73,7 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
                                 textAlign: 'left'
                             }}
                         >
-                            Latest activity started at:
+                            Latest activity ({this.props.latestActivityName}) started at:
                             <br />
                             <span style={{ fontWeight: 'bold' }}>
                                 {moment(this.props.latestTrackingEntry.start).format('dddd HH:mm:ss')}
@@ -87,12 +88,15 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
     private onActivityNameChange = (value: string) => {
         this.setState({
             newActivityName: value,
-            autoCompleteDataSource: this.props.activities.map(a => a.name).filter(a => a.indexOf(value) >= 0)
+            autoCompleteDataSource:
+                this.props.activities
+                    .map(a => a.name)
+                    .filter(a => a.toLowerCase().indexOf(value.toLowerCase()) >= 0)
+                    .sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
         });
     }
 
     private startTracking = async () => {
         await this.props.startTracking(this.state.newActivityName);
-        this.setState({ newActivityName: '' });
     }
 }

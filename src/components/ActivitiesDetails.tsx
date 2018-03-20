@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Pie, ChartData } from 'react-chartjs-2';
 import { ChartData as ChartJsData } from 'chart.js';
 import * as moment from 'moment';
-import { Button, Table, Row, Col } from 'antd';
+import { Button, Table, Row, Col, Popconfirm } from 'antd';
 
 import { TrackingEntry } from '../model/trackingEntry';
 import { Activity } from '../model/activity';
@@ -23,7 +23,14 @@ interface ActivitiesDetailsProps {
 export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
 
     render() {
-        const trackingAggregatedAndSorted = this.aggregateAndSortTracking();
+        const now = moment.utc();
+        const firstActivityStart =
+            this.props.tracking.length > 0
+                ? moment.utc(this.props.tracking.sort((a, b) => a.start < b.start ? -1 : 1)[0].start)
+                : now;
+        const reportDuration = now.diff(firstActivityStart);
+
+        const trackingAggregatedAndSorted = this.aggregateAndSortTracking(now.valueOf(), reportDuration);
         const colDefs = [{
             title: 'Activity name',
             dataIndex: 'activityName',
@@ -66,6 +73,10 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                                             columns={colDefs}
                                             style={{ marginLeft: 'auto', marginRight: 'auto', width: controlsWidth }}
                                             pagination={false}
+                                            footer={() => (
+                                                <span style={{ fontWeight: 'bold' }}>
+                                                    Total time: {this.getDurationString(reportDuration)}
+                                                </span>)}
                                             rowKey={(record: ActivityDetails) =>
                                                 `ACTIVITY_DETAILS_TABLE_ROW_${record.activityName}`}
                                         />
@@ -73,14 +84,20 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                                 </Row>
                                 <Row style={{ marginTop: '2vh' }}>
                                     <Col>
-                                        <Button
-                                            onClick={this.props.resetTracking}
-                                            type="danger"
-                                            size="large"
-                                            style={{ width: controlsWidth }}
+                                        <Popconfirm
+                                            title="Are you sure?"
+                                            onConfirm={(e: React.MouseEvent<HTMLElement>) => this.props.resetTracking()}
+                                            okText="Yes"
+                                            cancelText="No"
                                         >
-                                            Reset
-                                        </Button>
+                                            <Button
+                                                type="danger"
+                                                size="large"
+                                                style={{ width: controlsWidth }}
+                                            >
+                                                Reset
+                                            </Button>
+                                        </Popconfirm>
                                     </Col>
                                 </Row>
                             </div>
@@ -90,43 +107,43 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
         );
     }
 
-    private aggregateAndSortTracking = (): ActivityDetails[] => {
+    private aggregateAndSortTracking = (nowUtc: number, reportDuration: number): ActivityDetails[] => {
         if (this.props.tracking.length === 0) {
             return [];
         }
 
-        const now = moment();
-        const firstActivityStart = moment(this.props.tracking.sort((a, b) => a.start < b.start ? -1 : 1)[0].start);
-        const reportDuration = now.diff(firstActivityStart);
-
-        const activities =
+        const trackingWithActivityNames =
             this
                 .props
                 .tracking
                 .map(entry => {
-                    const duration = moment(entry.end || now).diff(moment(entry.start));
+                    const duration = moment.utc(entry.end || nowUtc).diff(moment.utc(entry.start));
                     const activity = this.props.activities.find(a => a.id === entry.activityId)!;
                     return {
                         activityName: activity.name,
                         colorHex: activity.colorHex,
-                        durationString: this.getDurationString(duration),
-                        percent: duration / reportDuration,
+                        duration: duration
                     };
                 });
 
-        const mapForGroupping = new Map<string, ActivityDetails>();
-        activities.forEach(activity => {
+        const mapForGroupping = new Map<string, { activityName: string, colorHex: string, duration: number }>();
+        trackingWithActivityNames.forEach(activity => {
             if (mapForGroupping.has(activity.activityName)) {
                 const activityAlreadyInMap = mapForGroupping.get(activity.activityName)!;
-                activityAlreadyInMap.percent += activity.percent;
+                activityAlreadyInMap.duration += activity.duration;
                 mapForGroupping.set(activity.activityName, activityAlreadyInMap);
+            } else {
+                mapForGroupping.set(activity.activityName, activity);
             }
-
-            mapForGroupping.set(activity.activityName, activity);
         });
 
         const activitiesGroupped: ActivityDetails[] = [];
-        mapForGroupping.forEach(value => activitiesGroupped.push(value));
+        mapForGroupping.forEach(activity => activitiesGroupped.push({
+            activityName: activity.activityName,
+            colorHex: activity.colorHex,
+            percent: activity.duration / reportDuration,
+            durationString: this.getDurationString(activity.duration)
+        }));
         return activitiesGroupped.sort(this.compareActivities);
     }
 
