@@ -1,7 +1,4 @@
 @media (max-width: 480px) {
-    img.logo {
-        display: none;
-    }
     .menu-title {
         display: none;
     }
