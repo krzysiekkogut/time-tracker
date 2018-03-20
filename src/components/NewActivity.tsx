@@ -57,7 +57,7 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
                         size="large"
                         style={{ width: '85%' }}
                     >
-                        Next activity
+                        Start
                     </Button>
                 </div>
                 {
