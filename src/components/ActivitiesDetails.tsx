@@ -55,8 +55,9 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                                             data={this.convertToChartJsData(trackingAggregatedAndSorted)}
                                             options={{
                                                 legend: {
-                                                    position: 'left'
+                                                    position: 'top'
                                                 },
+                                                maintainAspectRatio: false,
                                                 tooltips: {
                                                     callbacks: {
                                                         label: (tooltipItem, data) => {
