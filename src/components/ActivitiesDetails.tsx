@@ -50,14 +50,18 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                         : (
                             <div>
                                 <Row>
-                                    <Col xs={0} sm={12}>
+                                    <Col xs={0} sm={12} style={{height: 'calc(100vh - 150px)'}}>
                                         <Pie
                                             data={this.convertToChartJsData(trackingAggregatedAndSorted)}
                                             options={{
                                                 legend: {
-                                                    position: 'top'
+                                                    position: 'top',
+                                                    labels: {
+                                                        boxWidth: 10
+                                                    }
                                                 },
                                                 maintainAspectRatio: false,
+                                                responsive: true,
                                                 tooltips: {
                                                     callbacks: {
                                                         label: (tooltipItem, data) => {
