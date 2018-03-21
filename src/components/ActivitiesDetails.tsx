@@ -39,6 +39,10 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
             title: 'Duration',
             dataIndex: 'durationString',
             key: 'DURATION_COLUMN'
+        }, {
+            title: 'Percent [%]',
+            dataIndex: 'percent',
+            key: 'PERCENT_COLUMN'
         }];
         const controlsWidth = '85%';
 
@@ -146,7 +150,7 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
         mapForGroupping.forEach(activity => activitiesGroupped.push({
             activityName: activity.activityName,
             colorHex: activity.colorHex,
-            percent: activity.duration / reportDuration,
+            percent: Math.round(activity.duration / reportDuration * 100),
             durationString: this.getDurationString(activity.duration)
         }));
         return activitiesGroupped.sort(this.compareActivities);
