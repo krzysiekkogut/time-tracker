@@ -50,7 +50,7 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                         : (
                             <div>
                                 <Row>
-                                    <Col xs={0} sm={12} style={{height: 'calc(100vh - 150px)'}}>
+                                    <Col xs={0} sm={12} style={{height: 'calc(100vh - 150px)', paddingLeft: '2vh'}}>
                                         <Pie
                                             data={this.convertToChartJsData(trackingAggregatedAndSorted)}
                                             options={{

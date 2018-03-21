@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import { v4 as GuidV4 } from 'uuid';
 import * as moment from 'moment';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout } from 'antd';
 
 import ActivityRepository from '../dataAccess/activityRepository';
 import TrackingRepository from '../dataAccess/trackingRepository';
@@ -11,8 +11,8 @@ import { ActivitiesDetails } from './ActivitiesDetails';
 import { Activity } from '../model/activity';
 import { TrackingEntry } from '../model/trackingEntry';
 
-const Logo = require('./../assets/logo.png');
 import './TimeTracker.css';
+import { Header } from './Header';
 
 interface UserData {
     activities: Activity[];
@@ -63,33 +63,7 @@ export class TimeTracker extends React.Component<{}, UserData> {
         return (
             <BrowserRouter>
                 <Layout style={{ height: '100vh' }}>
-                    <Layout.Header>
-                        <img
-                            className="logo"
-                            src={Logo}
-                            alt="Stopwatch logo"
-                            style={{
-                                height: '95%',
-                                marginLeft: '2vw',
-                                marginRight: '2vw',
-                                float: 'left'
-                            }}
-                        />
-                        <Menu mode="horizontal" theme="dark" defaultSelectedKeys={['new']}>
-                            <Menu.Item key="new">
-                                <Link to="/new">
-                                    <Icon type="play-circle-o" />
-                                    <span className="menu-title">New activity</span>
-                                </Link>
-                            </Menu.Item>
-                            <Menu.Item key="details">
-                                <Link to="/details">
-                                    <Icon type="bars" />
-                                    <span className="menu-title">Details</span>
-                                </Link>
-                            </Menu.Item>
-                        </Menu>
-                    </Layout.Header>
+                    <Header />
                     <Layout.Content
                         style={{
                             textAlign: 'center',
@@ -98,7 +72,7 @@ export class TimeTracker extends React.Component<{}, UserData> {
                         }}
                     >
                         <Switch>
-                            <Route path="/details" component={activitiesDetailsComponent} />
+                            <Route path="/details" exact={true} component={activitiesDetailsComponent} />
                             <Route component={newActivityComponent} />
                         </Switch>
                     </Layout.Content>
@@ -112,6 +86,7 @@ export class TimeTracker extends React.Component<{}, UserData> {
                             href="https://www.linkedin.com/in/krzysztofkogut/"
                             title="LinkedIn profile"
                             target="_blank"
+                            rel="noopener"
                         >
                             Krzysztof Kogut &copy; 2018
                         </a>
