@@ -11,6 +11,7 @@ import { getDurationString } from '../helpers/durationHelper';
 interface ActivityDetails {
     activityName: string;
     percent: number;
+    percentString: string;
     durationString: string;
     colorHex: string;
 }
@@ -41,8 +42,8 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
             dataIndex: 'durationString',
             key: 'DURATION_COLUMN'
         }, {
-            title: 'Percent [%]',
-            dataIndex: 'percent',
+            title: 'Percent',
+            dataIndex: 'percentString',
             key: 'PERCENT_COLUMN'
         }];
         const controlsWidth = '85%';
@@ -151,7 +152,8 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
         mapForGroupping.forEach(activity => activitiesGroupped.push({
             activityName: activity.activityName,
             colorHex: activity.colorHex,
-            percent: Math.round(activity.duration / reportDuration * 100),
+            percent: activity.duration / reportDuration,
+            percentString: `${Math.round(activity.duration / reportDuration * 100)}%`,
             durationString: getDurationString(activity.duration)
         }));
         return activitiesGroupped.sort(this.compareActivities);
