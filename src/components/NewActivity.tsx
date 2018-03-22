@@ -4,6 +4,7 @@ import { AutoComplete, Button } from 'antd';
 
 import { TrackingEntry } from '../model/trackingEntry';
 import { Activity } from '../model/activity';
+import { getDurationString } from '../helpers/durationHelper';
 
 interface NewActivityProps {
     activities: Activity[];
@@ -15,16 +16,20 @@ interface NewActivityProps {
 interface NewActivityState {
     newActivityName: string;
     autoCompleteDataSource: string[];
+    lastActivityDuration: number;
 }
 
 export class NewActivity extends React.Component<NewActivityProps, NewActivityState> {
+
+    private updateLastActivityDurationInterval: NodeJS.Timer;
 
     constructor(props: NewActivityProps) {
         super(props);
 
         this.state = {
             newActivityName: '',
-            autoCompleteDataSource: []
+            autoCompleteDataSource: [],
+            lastActivityDuration: this.props.latestTrackingEntry ? this.getLastActivityDuration() : 0
         };
     }
 
@@ -33,6 +38,21 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
             autoCompleteDataSource:
                 this.props.activities.map(a => a.name).sort((a, b) => a.toLowerCase() < b.toLowerCase() ? -1 : 1)
         });
+
+        this.updateLastActivityDurationInterval = setInterval(
+            () => {
+                if (this.props.latestTrackingEntry) {
+                    this.setState({
+                        lastActivityDuration: this.getLastActivityDuration()
+                    });
+                }
+            },
+            60 * 1000
+        );
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.updateLastActivityDurationInterval);
     }
 
     render() {
@@ -73,16 +93,20 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
                                 textAlign: 'left'
                             }}
                         >
-                            Latest activity ({this.props.latestActivityName}) started at:
-                            <br />
+                            Latest activity ({this.props.latestActivityName}) started at&nbsp;
                             <span style={{ fontWeight: 'bold' }}>
                                 {moment(this.props.latestTrackingEntry.start).format('dddd HH:mm:ss')}
                             </span>
+                            &nbsp;and lasts {getDurationString(this.state.lastActivityDuration)}
                         </p>
                     )
                 }
             </div >
         );
+    }
+
+    private getLastActivityDuration(): number {
+        return moment.utc().diff(moment.utc(this.props.latestTrackingEntry!.start));
     }
 
     private onActivityNameChange = (value: string) => {
