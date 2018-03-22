@@ -5,23 +5,34 @@ import { Layout, Menu, Icon } from 'antd';
 const Logo = require('./../assets/logo.png');
 
 export const Header = withRouter(props => {
+    const getInitialSelectedMenuItems = () => {
+        switch (props.location.pathname) {
+            case '/details':
+                return ['/details'];
+            default:
+                return ['/new'];
+        }
+    };
+
     return (
         <Layout.Header>
-            <img
-                className="logo"
-                src={Logo}
-                alt="Stopwatch logo"
-                style={{
-                    height: '95%',
-                    marginLeft: '2vw',
-                    marginRight: '2vw',
-                    float: 'left'
-                }}
-            />
+            <Link to="/new" title="Home page">
+                <img
+                    className="logo"
+                    src={Logo}
+                    alt="Stopwatch logo"
+                    style={{
+                        height: '95%',
+                        marginLeft: '2vw',
+                        marginRight: '2vw',
+                        float: 'left'
+                    }}
+                />
+            </Link>
             <Menu
                 mode="horizontal"
                 theme="dark"
-                defaultSelectedKeys={[props.location.pathname]}
+                defaultSelectedKeys={getInitialSelectedMenuItems()}
             >
                 <Menu.Item key="/new">
                     <Link to="/new" title="New">
