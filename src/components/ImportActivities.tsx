@@ -79,6 +79,7 @@ export class ImportActivities extends React.Component<ImportActivitiesProps, Imp
                     Import activities
                 </Button>
                 <Modal
+                    style={{ top: '20px' }}
                     title="Import tracking data"
                     visible={this.state.modalOpen}
                     footer={(
