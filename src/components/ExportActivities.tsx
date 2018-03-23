@@ -71,7 +71,7 @@ export class ExportActivities extends React.Component<ExportActivitiesProps, Exp
                     <p>
                         Copy following value and use it in a 'Import activities' in another browser to copy your data.
                     </p>
-                    <Card>
+                    <Card style={{ overflowY: 'auto', maxHeight: '50vh'}}>
                         <p style={{ overflowWrap: 'break-word' }}>
                             {this.state.exportOutputValue}
                         </p>
