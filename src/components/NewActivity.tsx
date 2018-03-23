@@ -95,7 +95,7 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
                         >
                             Latest activity ({this.props.latestActivityName}) started at&nbsp;
                             <span style={{ fontWeight: 'bold' }}>
-                                {moment(this.props.latestTrackingEntry.start).format('dddd HH:mm:ss')}
+                                {moment(this.props.latestTrackingEntry.start).format('dddd HH:mm')}
                             </span>
                             &nbsp;and lasts {getDurationString(this.state.lastActivityDuration)}
                         </p>
