@@ -1,4 +1,4 @@
-## Time Traker
+## Time Tracker
 Time Tracker allows you to track your daily activities, so you could plan and manage your time more effectively.
 
 This web app works fully offline storing all data in local storage. It means, however, that data is not synced between devices/browsers.
