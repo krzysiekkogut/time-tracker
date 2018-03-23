@@ -22,7 +22,7 @@ export const Header = withRouter(props => {
                     src={Logo}
                     alt="Stopwatch logo"
                     style={{
-                        height: '95%',
+                        height: '46px',
                         marginLeft: '2vw',
                         marginRight: '2vw',
                         float: 'left'
