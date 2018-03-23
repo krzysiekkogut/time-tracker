@@ -58,6 +58,7 @@ export class ExportActivities extends React.Component<ExportActivitiesProps, Exp
                     Export activities
                 </Button>
                 <Modal
+                    style={{ top: '20px' }}
                     title="Export tracking data"
                     visible={this.state.modalOpen}
                     footer={(
