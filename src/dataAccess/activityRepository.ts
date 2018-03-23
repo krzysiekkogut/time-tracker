@@ -39,6 +39,11 @@ class ActivityRepository {
         localStorage.removeItem(ActivityRepository.activitiesKey);
     }
 
+    saveAllAsync = async (activities: Activity[]): Promise<void> => {
+        await this.clearAllAsync();
+        localStorage.setItem(ActivityRepository.activitiesKey, JSON.stringify(activities));
+    }
+
     private getRandomColor = (): string => {
         let color = '#';
         for (let index = 0; index < 6; index++) {

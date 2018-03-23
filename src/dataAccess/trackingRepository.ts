@@ -1,6 +1,7 @@
 import { TrackingEntry } from '../model/trackingEntry';
 
 class TrackingRepository {
+
     private static trackingKey: string = 'TRACKING_ENTRIES';
 
     getAllAsync = async (): Promise<TrackingEntry[]> => {
@@ -27,6 +28,11 @@ class TrackingRepository {
 
     clearAllAsync = async (): Promise<void> => {
         localStorage.removeItem(TrackingRepository.trackingKey);
+    }
+
+    saveAllAsync = async (trackingEntries: TrackingEntry[]): Promise<void> => {
+        await this.clearAllAsync();
+        localStorage.setItem(TrackingRepository.trackingKey, JSON.stringify(trackingEntries));
     }
 }
 

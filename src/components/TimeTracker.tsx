@@ -57,6 +57,7 @@ export class TimeTracker extends React.Component<{}, UserData> {
                 tracking={this.state.tracking}
                 activities={this.state.activities}
                 resetTracking={this.resetTracking}
+                onImport={this.onImport}
             />
         );
 
@@ -123,6 +124,10 @@ export class TimeTracker extends React.Component<{}, UserData> {
     private resetTracking = async () => {
         await TrackingRepository.clearAllAsync();
         await ActivityRepository.clearAllAsync();
+        await this.loadUserData();
+    }
+
+    private onImport = async () => {
         await this.loadUserData();
     }
 }

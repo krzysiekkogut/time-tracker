@@ -7,6 +7,7 @@ import { Button, Table, Row, Col, Popconfirm } from 'antd';
 import { TrackingEntry } from '../model/trackingEntry';
 import { Activity } from '../model/activity';
 import { getDurationString } from '../helpers/durationHelper';
+import { ExportImportActivities } from './ExportImportActivities';
 
 interface ActivityDetails {
     activityName: string;
@@ -20,6 +21,7 @@ interface ActivitiesDetailsProps {
     tracking: TrackingEntry[];
     activities: Activity[];
     resetTracking: () => Promise<void>;
+    onImport: () => Promise<void>;
 }
 
 export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
@@ -56,7 +58,7 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                         : (
                             <div>
                                 <Row>
-                                    <Col xs={0} sm={12} style={{height: 'calc(100vh - 150px)', paddingLeft: '2vh'}}>
+                                    <Col xs={0} sm={12} style={{ height: 'calc(100vh - 150px)', paddingLeft: '2vh' }}>
                                         <Pie
                                             data={this.convertToChartJsData(trackingAggregatedAndSorted)}
                                             options={{
@@ -114,6 +116,7 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                             </div>
                         )
                 }
+                <ExportImportActivities controlsWidth={controlsWidth} onImport={this.props.onImport} />
             </div>
         );
     }
