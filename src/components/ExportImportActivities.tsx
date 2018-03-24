@@ -5,7 +5,7 @@ import { ImportActivities } from './ImportActivities';
 
 interface ExportImportActivitiesProps {
     controlsWidth: string;
-    onImport: () => Promise<void>;
+    onImport: () => void;
 }
 
 export const ExportImportActivities = (props: ExportImportActivitiesProps) => {

@@ -25,9 +25,9 @@ export class ExportActivities extends React.Component<ExportActivitiesProps, Exp
         };
     }
 
-    async componentDidMount() {
-        const activities = await ActivityRepository.getAllAsync();
-        const tracking = await TrackingRepository.getAllAsync();
+    componentDidMount() {
+        const activities = ActivityRepository.getAll();
+        const tracking = TrackingRepository.getAll();
         this.setState({
             exportOutputValue: serialize({
                 activities: activities,

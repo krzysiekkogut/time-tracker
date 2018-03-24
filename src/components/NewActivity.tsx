@@ -10,7 +10,7 @@ interface NewActivityProps {
     activities: Activity[];
     latestTrackingEntry: TrackingEntry | null;
     latestActivityName: string | null;
-    startTracking: (activityName: string) => Promise<void>;
+    startTracking: (activityName: string) => void;
 }
 
 interface NewActivityState {
@@ -120,7 +120,7 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
         });
     }
 
-    private startTracking = async () => {
-        await this.props.startTracking(this.state.newActivityName);
+    private startTracking = () => {
+        this.props.startTracking(this.state.newActivityName);
     }
 }

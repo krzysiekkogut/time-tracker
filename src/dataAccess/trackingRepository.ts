@@ -4,7 +4,7 @@ class TrackingRepository {
 
     private static trackingKey: string = 'TRACKING_ENTRIES';
 
-    getAllAsync = async (): Promise<TrackingEntry[]> => {
+    getAll = (): TrackingEntry[] => {
         const trackingJson = localStorage.getItem(TrackingRepository.trackingKey);
         if (trackingJson) {
             const parsedObject = JSON.parse(trackingJson as string);
@@ -14,8 +14,8 @@ class TrackingRepository {
         return [];
     }
 
-    addAsync = async (newTrackingEntry: TrackingEntry): Promise<TrackingEntry> => {
-        const tracking = await this.getAllAsync();
+    add = (newTrackingEntry: TrackingEntry): TrackingEntry => {
+        const tracking = this.getAll();
         if (tracking.length > 0) {
             const indexOfLatest = tracking.findIndex(entry => entry.end === null);
             tracking[indexOfLatest].end = newTrackingEntry.start;
@@ -26,12 +26,12 @@ class TrackingRepository {
         return newTrackingEntry;
     }
 
-    clearAllAsync = async (): Promise<void> => {
+    clearAll = (): void => {
         localStorage.removeItem(TrackingRepository.trackingKey);
     }
 
-    saveAllAsync = async (trackingEntries: TrackingEntry[]): Promise<void> => {
-        await this.clearAllAsync();
+    saveAll = (trackingEntries: TrackingEntry[]): void => {
+        this.clearAll();
         localStorage.setItem(TrackingRepository.trackingKey, JSON.stringify(trackingEntries));
     }
 }

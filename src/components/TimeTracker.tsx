@@ -97,9 +97,9 @@ export class TimeTracker extends React.Component<{}, UserData> {
         );
     }
 
-    private loadUserData = async () => {
-        const activities = await ActivityRepository.getAllAsync();
-        const tracking = await TrackingRepository.getAllAsync();
+    private loadUserData = () => {
+        const activities = ActivityRepository.getAll();
+        const tracking = TrackingRepository.getAll();
 
         const newState: UserData = {
             activities: activities,
@@ -109,25 +109,25 @@ export class TimeTracker extends React.Component<{}, UserData> {
         this.setState(newState);
     }
 
-    private startTracking = async (activityName: string) => {
-        const activity = await ActivityRepository.addAsync(activityName);
+    private startTracking = (activityName: string) => {
+        const activity = ActivityRepository.add(activityName);
         const newTrackingEntry: TrackingEntry = {
             id: GuidV4(),
             start: moment.utc().valueOf(),
             end: null,
             activityId: activity.id,
         };
-        await TrackingRepository.addAsync(newTrackingEntry);
-        await this.loadUserData();
+        TrackingRepository.add(newTrackingEntry);
+        this.loadUserData();
     }
 
-    private resetTracking = async () => {
-        await TrackingRepository.clearAllAsync();
-        await ActivityRepository.clearAllAsync();
-        await this.loadUserData();
+    private resetTracking = () => {
+        TrackingRepository.clearAll();
+        ActivityRepository.clearAll();
+        this.loadUserData();
     }
 
-    private onImport = async () => {
-        await this.loadUserData();
+    private onImport = () => {
+        this.loadUserData();
     }
 }

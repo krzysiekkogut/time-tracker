@@ -7,7 +7,7 @@ import { deserialize } from '../helpers/serializer';
 
 interface ImportActivitiesProps {
     controlsWidth: string;
-    onImport: () => Promise<void>;
+    onImport: () => void;
 }
 
 interface ImportActivitiesState {
@@ -44,17 +44,17 @@ export class ImportActivities extends React.Component<ImportActivitiesProps, Imp
         });
     }
 
-    saveData = async () => {
+    saveData = () => {
         try {
             const deserialized = deserialize(this.state.importInputValue);
             if (deserialized.activities.length > 0 && deserialized.tracking.length > 0) {
-                await ActivityRepository.saveAllAsync(deserialized.activities);
-                await TrackingRepository.saveAllAsync(deserialized.tracking);
+                ActivityRepository.saveAll(deserialized.activities);
+                TrackingRepository.saveAll(deserialized.tracking);
                 notification.success({
                     message: 'Successfully imported data',
                     description: 'Data has been successfully imported.'
                 });
-                await this.props.onImport();
+                this.props.onImport();
                 this.closeModal();
             }
         } catch {
@@ -66,7 +66,6 @@ export class ImportActivities extends React.Component<ImportActivitiesProps, Imp
                     it needs to be generated using 'Export activities' feature`
             });
         }
-
     }
 
     render() {

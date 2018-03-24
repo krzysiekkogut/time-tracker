@@ -5,7 +5,7 @@ class ActivityRepository {
 
     private static activitiesKey: string = 'ACTIVITIES';
 
-    getAllAsync = async (): Promise<Activity[]> => {
+    getAll = (): Activity[] => {
         const activitiesJson = localStorage.getItem(ActivityRepository.activitiesKey);
         if (activitiesJson) {
             const parsedObject = JSON.parse(activitiesJson as string);
@@ -15,9 +15,8 @@ class ActivityRepository {
         return [];
     }
 
-    addAsync = async (activityName: string): Promise<Activity> => {
-
-        const activities = await this.getAllAsync();
+    add = (activityName: string): Activity => {
+        const activities = this.getAll();
 
         const existingActivity = activities.find(a => a.name.toLowerCase() === activityName.toLowerCase());
         if (existingActivity) {
@@ -35,12 +34,12 @@ class ActivityRepository {
         return newActivity;
     }
 
-    clearAllAsync = async (): Promise<void> => {
+    clearAll = (): void => {
         localStorage.removeItem(ActivityRepository.activitiesKey);
     }
 
-    saveAllAsync = async (activities: Activity[]): Promise<void> => {
-        await this.clearAllAsync();
+    saveAll = (activities: Activity[]): void => {
+        this.clearAll();
         localStorage.setItem(ActivityRepository.activitiesKey, JSON.stringify(activities));
     }
 

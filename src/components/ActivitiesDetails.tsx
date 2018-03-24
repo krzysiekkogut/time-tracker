@@ -20,8 +20,8 @@ interface ActivityDetails {
 interface ActivitiesDetailsProps {
     tracking: TrackingEntry[];
     activities: Activity[];
-    resetTracking: () => Promise<void>;
-    onImport: () => Promise<void>;
+    resetTracking: () => void;
+    onImport: () => void;
 }
 
 export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
