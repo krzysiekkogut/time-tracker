@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Col, Button, Modal, Card } from 'antd';
+import { Col, Button, Modal, Input } from 'antd';
 
 import ActivityRepository from '../dataAccess/activityRepository';
 import TrackingRepository from '../dataAccess/trackingRepository';
@@ -58,7 +58,6 @@ export class ExportActivities extends React.Component<ExportActivitiesProps, Exp
                     Export activities
                 </Button>
                 <Modal
-                    style={{ top: '20px' }}
                     title="Export tracking data"
                     visible={this.state.modalOpen}
                     footer={(
@@ -72,11 +71,11 @@ export class ExportActivities extends React.Component<ExportActivitiesProps, Exp
                     <p>
                         Copy following value and use it in a 'Import activities' in another browser to copy your data.
                     </p>
-                    <Card style={{ overflowY: 'auto', maxHeight: '50vh'}}>
-                        <p style={{ overflowWrap: 'break-word' }}>
-                            {this.state.exportOutputValue}
-                        </p>
-                    </Card>
+                    <Input.TextArea
+                        rows={10}
+                        value={this.state.exportOutputValue}
+                        disabled={true}
+                    />
                 </Modal>
             </Col>
         );
