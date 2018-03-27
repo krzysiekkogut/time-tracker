@@ -6,7 +6,6 @@ import TrackingRepository from '../dataAccess/trackingRepository';
 import { deserialize } from '../helpers/serializer';
 
 interface ImportActivitiesProps {
-    controlsWidth: string;
     onImport: () => void;
 }
 
@@ -71,10 +70,7 @@ export class ImportActivities extends React.Component<ImportActivitiesProps, Imp
     render() {
         return (
             <Col xs={12}>
-                <Button
-                    style={{ width: this.props.controlsWidth, marginLeft: 0, marginRight: '15%' }}
-                    onClick={() => this.openModal()}
-                >
+                <Button onClick={() => this.openModal()} style={{ width: '100%' }}>
                     Import activities
                 </Button>
                 <Modal

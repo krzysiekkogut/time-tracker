@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as moment from 'moment';
-import { AutoComplete, Button } from 'antd';
+import { AutoComplete, Button, Row, Col, DatePicker } from 'antd';
 
 import { TrackingEntry } from '../model/trackingEntry';
 import { Activity } from '../model/activity';
@@ -10,11 +10,12 @@ interface NewActivityProps {
     activities: Activity[];
     latestTrackingEntry: TrackingEntry | null;
     latestActivityName: string | null;
-    startTracking: (activityName: string) => void;
+    startTracking: (activityName: string, startTime: moment.Moment) => void;
 }
 
 interface NewActivityState {
     newActivityName: string;
+    newActivityStartTime: moment.Moment;
     autoCompleteDataSource: string[];
     lastActivityDuration: number;
 }
@@ -28,6 +29,7 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
 
         this.state = {
             newActivityName: '',
+            newActivityStartTime: moment(),
             autoCompleteDataSource: [],
             lastActivityDuration: this.props.latestTrackingEntry ? this.getLastActivityDuration() : 0
         };
@@ -59,28 +61,47 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
         const controlsWidth = '85%';
         return (
             <div>
-                <div>
+                <div style={{ width: controlsWidth, marginLeft: 'auto', marginRight: 'auto' }}>
                     <AutoComplete
                         placeholder="Activity name"
                         value={this.state.newActivityName}
                         onChange={this.onActivityNameChange}
                         dataSource={this.state.autoCompleteDataSource}
                         size="large"
-                        style={{ width: '85%' }}
+                        style={{ width: '100%' }}
                     />
                 </div>
-                <div style={{ marginTop: '2vh' }}>
-                    <Button
-                        disabled={this.state.newActivityName.length === 0}
-                        onClick={this.startTracking}
-                        type="primary"
-                        icon="play-circle"
-                        size="large"
-                        style={{ width: '85%' }}
-                    >
-                        {'Start / Stop'}
-                    </Button>
-                </div>
+                <Row
+                    style={{
+                        width: controlsWidth,
+                        marginTop: '2vh',
+                        marginLeft: 'auto',
+                        marginRight: 'auto'
+                    }}
+                >
+                    <Col xs={24} sm={12}>
+                        <Button
+                            disabled={this.state.newActivityName.length === 0}
+                            onClick={this.startTracking}
+                            type="primary"
+                            icon="play-circle"
+                            size="large"
+                            style={{ width: '100%' }}
+                        >
+                            {'Start / Stop'}
+                        </Button>
+                    </Col>
+                    <Col xs={24} sm={12}>
+                        <DatePicker
+                            showTime={true}
+                            format="HH:mm:ss"
+                            value={this.state.newActivityStartTime}
+                            size="large"
+                            style={{ width: '100%' }}
+                            onChange={this.onActivityStartTimeChange}
+                        />
+                    </Col>
+                </Row>
                 {
                     this.props.latestTrackingEntry
                     && (
@@ -106,7 +127,7 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
     }
 
     private getLastActivityDuration(): number {
-        return moment.utc().diff(moment.utc(this.props.latestTrackingEntry!.start));
+        return moment().diff(moment(this.props.latestTrackingEntry!.start));
     }
 
     private onActivityNameChange = (value: string) => {
@@ -120,7 +141,13 @@ export class NewActivity extends React.Component<NewActivityProps, NewActivitySt
         });
     }
 
+    private onActivityStartTimeChange = (date: moment.Moment) => {
+        this.setState({
+            newActivityStartTime: date
+        });
+    }
+
     private startTracking = () => {
-        this.props.startTracking(this.state.newActivityName);
+        this.props.startTracking(this.state.newActivityName, this.state.newActivityStartTime);
     }
 }

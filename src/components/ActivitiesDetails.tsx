@@ -27,10 +27,10 @@ interface ActivitiesDetailsProps {
 export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
 
     render() {
-        const now = moment.utc();
+        const now = moment();
         const firstActivityStart =
             this.props.tracking.length > 0
-                ? moment.utc(this.props.tracking.sort((a, b) => a.start < b.start ? -1 : 1)[0].start)
+                ? moment(this.props.tracking.sort((a, b) => a.start < b.start ? -1 : 1)[0].start)
                 : now;
         const reportDuration = now.diff(firstActivityStart);
 
@@ -121,7 +121,7 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
         );
     }
 
-    private aggregateAndSortTracking = (nowUtc: number, reportDuration: number): ActivityDetails[] => {
+    private aggregateAndSortTracking = (now: number, reportDuration: number): ActivityDetails[] => {
         if (this.props.tracking.length === 0) {
             return [];
         }
@@ -131,7 +131,7 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                 .props
                 .tracking
                 .map(entry => {
-                    const duration = moment.utc(entry.end || nowUtc).diff(moment.utc(entry.start));
+                    const duration = moment(entry.end || now).diff(moment(entry.start));
                     const activity = this.props.activities.find(a => a.name === entry.activityName)!;
                     return {
                         activityName: entry.activityName,

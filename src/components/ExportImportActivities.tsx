@@ -10,9 +10,9 @@ interface ExportImportActivitiesProps {
 
 export const ExportImportActivities = (props: ExportImportActivitiesProps) => {
     return (
-        <Row>
-            <ExportActivities controlsWidth={props.controlsWidth} />
-            <ImportActivities controlsWidth={props.controlsWidth} onImport={props.onImport} />
+        <Row style={{ width: props.controlsWidth, marginLeft: 'auto', marginRight: 'auto' }}>
+            <ExportActivities />
+            <ImportActivities onImport={props.onImport} />
         </Row>
     );
 };

@@ -108,10 +108,10 @@ export class TimeTracker extends React.Component<{}, UserData> {
         this.setState(newState);
     }
 
-    private startTracking = (activityName: string) => {
+    private startTracking = (activityName: string, startTime: moment.Moment) => {
         const activity = ActivityRepository.add(activityName);
         const newTrackingEntry: TrackingEntry = {
-            start: moment.utc().valueOf(),
+            start: startTime.valueOf(),
             end: null,
             activityName: activity.name,
         };
