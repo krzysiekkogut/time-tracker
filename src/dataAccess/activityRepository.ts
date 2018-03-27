@@ -1,5 +1,4 @@
 import { Activity } from '../model/activity';
-import { v4 as GuidV4 } from 'uuid';
 
 class ActivityRepository {
 
@@ -24,7 +23,6 @@ class ActivityRepository {
         }
 
         const newActivity = {
-            id: GuidV4(),
             name: activityName,
             colorHex: this.getRandomColor()
         };

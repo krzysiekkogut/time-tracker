@@ -126,22 +126,22 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
             return [];
         }
 
-        const trackingWithActivityNames =
+        const trackingWithColors =
             this
                 .props
                 .tracking
                 .map(entry => {
                     const duration = moment.utc(entry.end || nowUtc).diff(moment.utc(entry.start));
-                    const activity = this.props.activities.find(a => a.id === entry.activityId)!;
+                    const activity = this.props.activities.find(a => a.name === entry.activityName)!;
                     return {
-                        activityName: activity.name,
+                        activityName: entry.activityName,
                         colorHex: activity.colorHex,
                         duration: duration
                     };
                 });
 
         const mapForGroupping = new Map<string, { activityName: string, colorHex: string, duration: number }>();
-        trackingWithActivityNames.forEach(activity => {
+        trackingWithColors.forEach(activity => {
             if (mapForGroupping.has(activity.activityName)) {
                 const activityAlreadyInMap = mapForGroupping.get(activity.activityName)!;
                 activityAlreadyInMap.duration += activity.duration;

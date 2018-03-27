@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
-import { v4 as GuidV4 } from 'uuid';
 import * as moment from 'moment';
 import { Layout } from 'antd';
 
@@ -41,7 +40,7 @@ export class TimeTracker extends React.Component<{}, UserData> {
                 : this.state.tracking.find(entry => entry.end === null)!;
         const latestActivityName =
             latestTrackingEntry
-                ? this.state.activities.find(activity => activity.id === latestTrackingEntry.activityId)!.name
+                ? this.state.activities.find(activity => activity.name === latestTrackingEntry.activityName)!.name
                 : null;
 
         const newActivityComponent = () => (
@@ -112,10 +111,9 @@ export class TimeTracker extends React.Component<{}, UserData> {
     private startTracking = (activityName: string) => {
         const activity = ActivityRepository.add(activityName);
         const newTrackingEntry: TrackingEntry = {
-            id: GuidV4(),
             start: moment.utc().valueOf(),
             end: null,
-            activityId: activity.id,
+            activityName: activity.name,
         };
         TrackingRepository.add(newTrackingEntry);
         this.loadUserData();
