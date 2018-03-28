@@ -3,8 +3,8 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import * as moment from 'moment';
 import { Layout } from 'antd';
 
-import ActivityRepository from '../dataAccess/activityRepository';
-import TrackingRepository from '../dataAccess/trackingRepository';
+import { ITrackingRepository } from '../dataAccess/trackingRepository';
+import { IActivityRepository } from '../dataAccess/activityRepository';
 import { NewActivity } from './NewActivity';
 import { ActivitiesDetails } from './ActivitiesDetails';
 import { Activity } from '../model/activity';
@@ -13,14 +13,19 @@ import { TrackingEntry } from '../model/trackingEntry';
 import './TimeTracker.css';
 import { Header } from './Header';
 
+interface TimeTrackerProps {
+    activityRepository: IActivityRepository;
+    trackingRepository: ITrackingRepository;
+}
+
 interface UserData {
     activities: Activity[];
     tracking: TrackingEntry[];
 }
 
-export class TimeTracker extends React.Component<{}, UserData> {
+export class TimeTracker extends React.Component<TimeTrackerProps, UserData> {
 
-    constructor(props: {}) {
+    constructor(props: TimeTrackerProps) {
         super(props);
 
         this.state = {
@@ -57,6 +62,10 @@ export class TimeTracker extends React.Component<{}, UserData> {
                 activities={this.state.activities}
                 resetTracking={this.resetTracking}
                 onImport={this.onImport}
+                getAllActivities={this.props.activityRepository.getAll}
+                getAllTrackingEntries={this.props.trackingRepository.getAll}
+                saveAllActivities={this.props.activityRepository.saveAll}
+                saveAllTrackingEntries={this.props.trackingRepository.saveAll}
             />
         );
 
@@ -97,8 +106,8 @@ export class TimeTracker extends React.Component<{}, UserData> {
     }
 
     private loadUserData = () => {
-        const activities = ActivityRepository.getAll();
-        const tracking = TrackingRepository.getAll();
+        const activities = this.props.activityRepository.getAll();
+        const tracking = this.props.trackingRepository.getAll();
 
         const newState: UserData = {
             activities: activities,
@@ -109,19 +118,19 @@ export class TimeTracker extends React.Component<{}, UserData> {
     }
 
     private startTracking = (activityName: string, startTime: moment.Moment) => {
-        const activity = ActivityRepository.add(activityName);
+        const activity = this.props.activityRepository.add(activityName);
         const newTrackingEntry: TrackingEntry = {
             start: startTime.valueOf(),
             end: null,
             activityName: activity.name,
         };
-        TrackingRepository.add(newTrackingEntry);
+        this.props.trackingRepository.add(newTrackingEntry);
         this.loadUserData();
     }
 
     private resetTracking = () => {
-        TrackingRepository.clearAll();
-        ActivityRepository.clearAll();
+        this.props.trackingRepository.clearAll();
+        this.props.activityRepository.clearAll();
         this.loadUserData();
     }
 

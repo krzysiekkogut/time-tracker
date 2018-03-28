@@ -1,6 +1,14 @@
 import { Activity } from '../model/activity';
 
-class ActivityRepository {
+// tslint:disable-next-line:interface-name
+export interface IActivityRepository {
+    getAll: () => Activity[];
+    add: (activityName: string) => Activity;
+    clearAll: () => void;
+    saveAll: (activities: Activity[]) => void;
+}
+
+export class ActivityRepository implements IActivityRepository {
 
     private static activitiesKey: string = 'ACTIVITIES';
 
@@ -49,5 +57,3 @@ class ActivityRepository {
         return color;
     }
 }
-
-export default new ActivityRepository();

@@ -6,6 +6,7 @@
     "antd": "^3.3.1",
     "chart.js": "^2.7.2",
     "moment": "^2.21.0",
+    "npm": "^5.8.0",
     "react": "^16.2.0",
     "react-chartjs-2": "^2.7.0",
     "react-copy-to-clipboard": "^5.0.1",

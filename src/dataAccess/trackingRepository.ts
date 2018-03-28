@@ -1,6 +1,14 @@
 import { TrackingEntry } from '../model/trackingEntry';
 
-class TrackingRepository {
+// tslint:disable-next-line:interface-name
+export interface ITrackingRepository {
+    getAll: () => TrackingEntry[];
+    add: (newTrackingEntry: TrackingEntry) => TrackingEntry;
+    clearAll: () => void;
+    saveAll: (activities: TrackingEntry[]) => void;
+}
+
+export class TrackingRepository implements ITrackingRepository {
 
     private static trackingKey: string = 'TRACKING_ENTRIES';
 
@@ -35,5 +43,3 @@ class TrackingRepository {
         localStorage.setItem(TrackingRepository.trackingKey, JSON.stringify(trackingEntries));
     }
 }
-
-export default new TrackingRepository();

@@ -22,6 +22,10 @@ interface ActivitiesDetailsProps {
     activities: Activity[];
     resetTracking: () => void;
     onImport: () => void;
+    getAllActivities: () => Activity[];
+    getAllTrackingEntries: () => TrackingEntry[];
+    saveAllActivities: (activities: Activity[]) => void;
+    saveAllTrackingEntries: (trackingEntries: TrackingEntry[]) => void;
 }
 
 export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
@@ -116,7 +120,14 @@ export class ActivitiesDetails extends React.Component<ActivitiesDetailsProps> {
                             </div>
                         )
                 }
-                <ExportImportActivities controlsWidth={controlsWidth} onImport={this.props.onImport} />
+                <ExportImportActivities
+                    controlsWidth={controlsWidth}
+                    onImport={this.props.onImport}
+                    getAllActivities={this.props.getAllActivities}
+                    getAllTrackingEntries={this.props.getAllTrackingEntries}
+                    saveAllActivities={this.props.saveAllActivities}
+                    saveAllTrackingEntries={this.props.saveAllTrackingEntries}
+                />
             </div>
         );
     }

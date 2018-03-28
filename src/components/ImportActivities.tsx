@@ -1,12 +1,14 @@
 import * as React from 'react';
 import { Col, Button, Modal, notification, Input } from 'antd';
 
-import ActivityRepository from '../dataAccess/activityRepository';
-import TrackingRepository from '../dataAccess/trackingRepository';
 import { deserialize } from '../helpers/serializer';
+import { Activity } from '../model/activity';
+import { TrackingEntry } from '../model/trackingEntry';
 
 interface ImportActivitiesProps {
     onImport: () => void;
+    saveAllActivities: (activities: Activity[]) => void;
+    saveAllTrackingEntries: (trackingEntries: TrackingEntry[]) => void;
 }
 
 interface ImportActivitiesState {
@@ -47,8 +49,8 @@ export class ImportActivities extends React.Component<ImportActivitiesProps, Imp
         try {
             const deserialized = deserialize(this.state.importInputValue);
             if (deserialized.activities.length > 0 && deserialized.tracking.length > 0) {
-                ActivityRepository.saveAll(deserialized.activities);
-                TrackingRepository.saveAll(deserialized.tracking);
+                this.props.saveAllActivities(deserialized.activities);
+                this.props.saveAllTrackingEntries(deserialized.tracking);
                 notification.success({
                     message: 'Successfully imported data',
                     description: 'Data has been successfully imported.'

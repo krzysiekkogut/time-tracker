@@ -2,18 +2,23 @@ import * as React from 'react';
 import { Col, Button, Modal, notification } from 'antd';
 import * as CopyToClipboard from 'react-copy-to-clipboard';
 
-import ActivityRepository from '../dataAccess/activityRepository';
-import TrackingRepository from '../dataAccess/trackingRepository';
 import { serialize } from '../helpers/serializer';
+import { Activity } from '../model/activity';
+import { TrackingEntry } from '../model/trackingEntry';
+
+interface ExportActivitiesProps {
+    getAllActivities: () => Activity[];
+    getAllTrackingEntries: () => TrackingEntry[];
+}
 
 interface ExportActivitiesState {
     exportOutputValue: string;
     modalOpen: boolean;
 }
 
-export class ExportActivities extends React.Component<{}, ExportActivitiesState> {
+export class ExportActivities extends React.Component<ExportActivitiesProps, ExportActivitiesState> {
 
-    constructor(props: {}) {
+    constructor(props: ExportActivitiesProps) {
         super(props);
 
         this.state = {
@@ -23,8 +28,8 @@ export class ExportActivities extends React.Component<{}, ExportActivitiesState>
     }
 
     componentDidMount() {
-        const activities = ActivityRepository.getAll();
-        const tracking = TrackingRepository.getAll();
+        const activities = this.props.getAllActivities();
+        const tracking = this.props.getAllTrackingEntries();
         this.setState({
             exportOutputValue: serialize({
                 activities: activities,
